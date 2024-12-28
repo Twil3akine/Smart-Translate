@@ -4,26 +4,17 @@
 
 ## Usage
 
+If this is your first time running the script, please obtain an API key from https://www.deepl.com/ja/pro-api/.
+
 1. Select text with your mouse or cursor.
 
-2. Push `Alt` + `T`.
+2. Press `Alt` + `t`.
+   ※ If the API key is not registered, an input window will open. Please register it.
 
-3. Will display result translation.
-
----
-
-## Setting
-
-1. Get your DeepL API -> https://www.deepl.com/ja/pro-api/
-
-2. Set your API to `const apiKey = 'YOUR_DEEPL_API_KEY';` in this script.
-
-3. Store.
-
-4. Use!
+3. The translation result will be displayed.
 
 ---
 
 ## Others
 
-if you want to contact with me, you send the DM (https://x.com/twil3akine or twil3akine@gmail.com)
+If you'd like to contact me, send a DM (https://x.com/twil3akine or twil3akine@gmail.com).
