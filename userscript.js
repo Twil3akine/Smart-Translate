@@ -2,42 +2,44 @@
 // @license MIT
 // @name         Smart Translate with DeepL API
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.2.0
 // @description  Translate chosen text to another language with DeepL API.
 // @author       Twil3akine
 // @match        *://*/*
 // @match        file:///*
 // @grant        GM_xmlhttpRequest
-// @downloadURL https://update.greasyfork.org/scripts/521946/Smart%20Translate%20with%20DeepL%20API.user.js
-// @updateURL https://update.greasyfork.org/scripts/521946/Smart%20Translate%20with%20DeepL%20API.meta.js
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @downloadURL  https://update.greasyfork.org/scripts/521946/Smart%20Translate%20with%20DeepL%20API.user.js
+// @updateURL    https://update.greasyfork.org/scripts/521946/Smart%20Translate%20with%20DeepL%20API.meta.js
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
-    const apiKey = 'YOUR_DEEPL_API_KEY';
-
-    console.log('Smart-Translate is started!');
-    // set keyboard-shortcut (Alt+T)
-    document.addEventListener('keydown', function(event) {
-        if (event.altKey && event.key === "t") {
-            const selectedText = window.getSelection().toString().trim();
-            if (selectedText) {
-                // send request to DeepL API
-                translateText(selectedText);
+    // APIキーを取得または保存
+    const getApiKey = async () => {
+        let apiKey = await GM_getValue('DEEPL_API_KEY', null);
+        if (!apiKey) {
+            apiKey = prompt('Enter your DeepL API key:');
+            if (apiKey) {
+                await GM_setValue('DEEPL_API_KEY', apiKey);
             } else {
-                alert('Please select text!');
+                alert('API key is required to use this script.');
             }
         }
-    });
+        return apiKey;
+    };
 
-    const translateText = (text) => {
+    const translateText = async (text, lang) => {
+        const apiKey = await getApiKey();
+        if (!apiKey) return;
+
         const url = 'https://api-free.deepl.com/v2/translate';
-
         const params = {
             auth_key: apiKey,
             text: text,
-            target_lang: 'JA',
+            target_lang: lang,
         };
 
         GM_xmlhttpRequest({
@@ -54,13 +56,35 @@
                     alert(`${text}\n\n->\n\n${translatedText}`);
                     console.log(`${text}\n\n->\n\n${translatedText}`);
                 } catch (e) {
-                    console.log('Error parsing the response from DeepL:', e);
+                    console.error('Error parsing the response from DeepL:', e);
+                    alert('An error occurred while processing the translation.');
                 }
             },
             onerror: (error) => {
                 console.error('Error with DeepL API request:', error);
-                alert('Error occurred while traslating. Please try again later.');
-            }
+                alert('Error occurred while translating. Please try again later.');
+            },
         });
-    }
+    };
+
+    console.log('Smart-Translate is started!');
+    document.addEventListener('keydown', async (event) => {
+        if (event.altKey && event.key === 't') {
+            const selectedText = window.getSelection().toString().trim();
+            if (selectedText) {
+                await translateText(selectedText, 'JA');
+            } else {
+                alert('Please select text!');
+            }
+        }
+
+        if (event.altKey && event.key === 'r') {
+            const apiKey = await getApiKey();
+            const newKey = prompt(`Please input your new API key\nNow API key: ${apiKey}`);
+            if (newKey) {
+                await GM_setValue('DEEPL_API_KEY', newKey);
+                alert('API key updated successfully.');
+            }
+        }
+    });
 })();
