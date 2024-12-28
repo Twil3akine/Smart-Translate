@@ -3,10 +3,13 @@
 // @name         Smart Translate with DeepL API
 // @namespace    http://tampermonkey.net/
 // @version      1.2.0
-// @description  Translate chosen text to another language with DeepL API.
+// @description  Translate selected text into another language using the DeepL API.
 // @author       Twil3akine
 // @match        *://*/*
 // @match        file:///*
+// @match        ftp://*/*
+// @include      myapp://*
+// @connect      *
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
