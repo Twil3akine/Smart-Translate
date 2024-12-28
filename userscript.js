@@ -2,11 +2,14 @@
 // @license MIT
 // @name         Smart Translate with DeepL API
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
-// @description  Translate chosen text to another language with DeepL API.
+// @version      1.3.0
+// @description  Translate selected text into another language using the DeepL API.
 // @author       Twil3akine
 // @match        *://*/*
 // @match        file:///*
+// @match        ftp://*/*
+// @include      myapp://*
+// @connect      *
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -31,11 +34,76 @@
         return apiKey;
     };
 
+    const requestLanguage = async () => {
+        const normalize = (str) => {
+            return str.replace(/[Ａ-Ｚａ-ｚ]/g, (match) => {
+                return String.fromCharCode(match.charCodeAt(0) - 0xFEE0);
+            });
+        }
+
+        const langMap = {
+            "arabic": "AR",
+            "bulgarian": "BG",
+            "czech": "CS",
+            "danish": "DA",
+            "german": "DE",
+            "greek": "EL",
+            "english": "EN",
+            "english-british": "EN-GB",
+            "english-american": "EN-US",
+            "spanish": "ES",
+            "estonian": "ET",
+            "finnish": "FI",
+            "french": "FR",
+            "hungarian": "HU",
+            "indonesian": "ID",
+            "italian": "IT",
+            "japanese": "JA",
+            "korean": "KO",
+            "lithuanian": "LT",
+            "latvian": "LV",
+            "norwegian-bokmaal": "NB",
+            "dutch": "NL",
+            "polish": "PL",
+            "portuguese": "PT",
+            "portuguese-brazilian": "PT-BR",
+            "portuguese-european": "PT-PT",
+            "romanian": "RO",
+            "russian": "RU",
+            "slovak": "SK",
+            "slovenian": "SL",
+            "swedish": "SV",
+            "turkish": "TR",
+            "ukrainian": "UK",
+            "chinese": "ZH",
+            "chinese-simplified": "ZH-HANS",
+            "chinese-traditional": "ZH-HANT"
+        };
+
+        const input = await new Promise((resolve) => {
+            const userInput = prompt('Please enter the target language for translation (e.g., English, Japanese)');
+            resolve(userInput);
+        });
+
+        const formatText = normalize(input);
+
+        // 入力があれば、対応する言語コードを返す
+        const langCode = langMap[formatText.toLowerCase()];
+        if (langCode) {
+            return langCode;
+        } else {
+            alert('Invalid language entered. Defaulting to Japanese.');
+        }
+
+        return 'JA';
+    };
+
     const translateText = async (text, lang) => {
         const apiKey = await getApiKey();
         if (!apiKey) return;
 
         const url = 'https://api-free.deepl.com/v2/translate';
+
         const params = {
             auth_key: apiKey,
             text: text,
@@ -73,6 +141,16 @@
             const selectedText = window.getSelection().toString().trim();
             if (selectedText) {
                 await translateText(selectedText, 'JA');
+            } else {
+                alert('Please select text!');
+            }
+        }
+
+        if (event.altKey && event.key === 'T') {
+            const selectedText = window.getSelection().toString().trim();
+            if (selectedText) {
+                const selectLanguage = await requestLanguage();
+                await translateText(selectedText, selectLanguage);
             } else {
                 alert('Please select text!');
             }

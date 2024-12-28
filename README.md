@@ -4,26 +4,34 @@
 
 ## Usage
 
+If this is your first time running the script, please obtain an API key from https://www.deepl.com/ja/pro-api/.
+
 1. Select text with your mouse or cursor.
+<br>
 
-2. Push `Alt` + `T`.
+2. Press `Alt` + `t`.
+   ※ If the API key is not registered, an input window will open. Please register it.
+<br>
 
-3. Will display result translation.
+3. The translation result will be displayed.
 
 ---
 
-## Setting
+## Commands
 
-1. Get your DeepL API -> https://www.deepl.com/ja/pro-api/
+- `Alt` + `t`:
+   Translate into Japanese.
+<br>
 
-2. Set your API to `const apiKey = 'YOUR_DEEPL_API_KEY';` in this script.
+- `Alt` + `Shift` + `t`:
+   Translate into the input language. Supported languages can be found here: (https://developers.deepl.com/docs/ja/resources/supported-languages#target-languages).
+<br>
 
-3. Store.
-
-4. Use!
+- `Alt` + `r`:
+   Change the DeepL API Key.
 
 ---
 
 ## Others
 
-if you want to contact with me, you send the DM (https://x.com/twil3akine or twil3akine@gmail.com)
+If you'd like to contact me, send a DM (https://x.com/twil3akine or twil3akine@gmail.com).
